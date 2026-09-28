@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cinema-900: #0f1115;
+  --color-cinema-800: #1a1d24;
+  --color-cinema-700: #2a2e39;
+  --color-accent: #e50914;
+}
+
+body {
+  background-color: var(--color-cinema-900);
+  color: #ffffff;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
