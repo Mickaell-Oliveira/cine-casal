@@ -37,7 +37,7 @@ export function MovieCard({
         <div className="absolute inset-0 bg-gradient-to-t from-cinema-900 via-transparent to-transparent opacity-80" />
         
         {/* Actions Overlay */}
-        <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity translate-x-2 group-hover:translate-x-0">
+        <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all md:translate-x-2 md:group-hover:translate-x-0">
           {isSearch && onAdd && (
             <button
               onClick={() => onAdd(movie)}
