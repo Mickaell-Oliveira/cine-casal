@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Search, Popcorn, Film, Heart } from 'lucide-react';
 import { Header } from './components/Header';
-import { SettingsModal } from './components/SettingsModal';
 import { MovieCard } from './components/MovieCard';
 import { RatingModal } from './components/RatingModal';
 import { useMovies } from './hooks/useMovies';
@@ -9,7 +8,6 @@ import { searchMovies } from './services/api';
 import type { Movie } from './types';
 
 function App() {
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Movie[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -18,22 +16,17 @@ function App() {
   
   const [ratingModalMovie, setRatingModalMovie] = useState<Movie | null>(null);
 
+  // Configurações e loading
   const {
     watchlist,
     watched,
+    loading,
+    error: supabaseError,
     addToWatchlist,
     removeFromWatchlist,
     markAsWatched,
     removeFromWatched,
   } = useMovies();
-
-  // Check if API key is configured on mount
-  useEffect(() => {
-    const apiKey = localStorage.getItem('tmdb_api_key');
-    if (!apiKey) {
-      setIsSettingsOpen(true);
-    }
-  }, []);
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(async () => {
@@ -46,9 +39,6 @@ function App() {
         } catch (err) {
           if (err instanceof Error) {
             setError(err.message);
-            if (err.message.includes('API Key')) {
-               setIsSettingsOpen(true);
-            }
           }
         } finally {
           setIsSearching(false);
@@ -78,8 +68,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-cinema-900 pb-20">
-      <Header onOpenSettings={() => setIsSettingsOpen(true)} />
-      <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+      <Header />
       
       <RatingModal
         movie={ratingModalMovie}
@@ -87,6 +76,18 @@ function App() {
         onClose={() => setRatingModalMovie(null)}
         onSave={markAsWatched}
       />
+
+      {loading && (
+        <div className="fixed inset-0 bg-cinema-900/80 backdrop-blur-sm z-[100] flex items-center justify-center">
+           <div className="animate-spin rounded-full h-12 w-12 border-4 border-accent border-t-transparent"></div>
+        </div>
+      )}
+
+      {supabaseError && (
+        <div className="bg-red-500/20 border border-red-500 text-red-100 p-4 mx-4 mt-4 rounded-xl text-center">
+          Erro ao carregar filmes do banco de dados: {supabaseError}
+        </div>
+      )}
 
       <main className="max-w-7xl mx-auto px-4 pt-8">
         {/* Search Section */}
