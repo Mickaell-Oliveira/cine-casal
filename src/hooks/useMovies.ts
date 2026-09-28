@@ -14,7 +14,7 @@ export const useMovies = () => {
       const { data, error } = await supabase
         .from('movies')
         .select('*')
-        .order('added_at', { ascending: false });
+        .order('added_at', { ascending: true });
 
       if (error) throw error;
 
@@ -121,10 +121,10 @@ export const useMovies = () => {
     }
   };
 
-  const markAsWatched = async (id: number, ratingHe: number, ratingShe: number, comment?: string) => {
+  const markAsWatched = async (id: number, ratingHe: number, ratingShe: number, comment?: string, customWatchedAt?: string) => {
     const movie = watchlist.find((m) => m.id === id);
     if (movie) {
-      const watchedAt = new Date().toISOString();
+      const watchedAt = customWatchedAt || new Date().toISOString();
       
       // Atualização otimista
       setWatchlist(watchlist.filter((m) => m.id !== id));

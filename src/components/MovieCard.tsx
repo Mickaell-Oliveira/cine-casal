@@ -5,6 +5,7 @@ import { getImageUrl } from '../services/api';
 interface MovieCardProps {
   movie: Movie;
   type: 'search' | 'watchlist' | 'watched';
+  isAdmin: boolean;
   onAdd?: (movie: Movie) => void;
   onRemoveWatchlist?: (id: number) => void;
   onRemoveWatched?: (id: number) => void;
@@ -14,6 +15,7 @@ interface MovieCardProps {
 export function MovieCard({
   movie,
   type,
+  isAdmin,
   onAdd,
   onRemoveWatchlist,
   onRemoveWatched,
@@ -37,8 +39,9 @@ export function MovieCard({
         <div className="absolute inset-0 bg-gradient-to-t from-cinema-900 via-transparent to-transparent opacity-80" />
         
         {/* Actions Overlay */}
-        <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all md:translate-x-2 md:group-hover:translate-x-0">
-          {isSearch && onAdd && (
+        {isAdmin && (
+          <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all md:translate-x-2 md:group-hover:translate-x-0">
+            {isSearch && onAdd && (
             <button
               onClick={() => onAdd(movie)}
               className="p-2 bg-accent hover:bg-red-700 text-white rounded-full shadow-lg backdrop-blur-sm transition-colors"
@@ -76,7 +79,8 @@ export function MovieCard({
               <Trash2 size={20} />
             </button>
           )}
-        </div>
+          </div>
+        )}
 
         {/* Release Year Badge */}
         {movie.release_date && (

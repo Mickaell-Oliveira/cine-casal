@@ -7,22 +7,31 @@ interface RatingModalProps {
   movie: Movie | null;
   isOpen: boolean;
   onClose: () => void;
-  onSave: (id: number, ratingHe: number, ratingShe: number, comment?: string) => void;
+  onSave: (id: number, ratingHe: number, ratingShe: number, comment?: string, watchedAt?: string) => void;
 }
 
 export function RatingModal({ movie, isOpen, onClose, onSave }: RatingModalProps) {
   const [ratingHe, setRatingHe] = useState(0);
   const [ratingShe, setRatingShe] = useState(0);
   const [comment, setComment] = useState('');
+  
+  // Format today as YYYY-MM-DD for the date input default
+  const today = new Date().toISOString().split('T')[0];
+  const [watchedAt, setWatchedAt] = useState(today);
 
   if (!isOpen || !movie) return null;
 
   const handleSave = () => {
-    onSave(movie.id, ratingHe, ratingShe, comment);
+    // If the user selects a date, we append a time so it forms a valid ISO string.
+    // If not, we just use the current ISO string.
+    const dateToSave = watchedAt ? new Date(watchedAt + 'T12:00:00Z').toISOString() : new Date().toISOString();
+    onSave(movie.id, ratingHe, ratingShe, comment, dateToSave);
+    
     // Reset state
     setRatingHe(0);
     setRatingShe(0);
     setComment('');
+    setWatchedAt(today);
     onClose();
   };
 
@@ -88,6 +97,19 @@ export function RatingModal({ movie, isOpen, onClose, onSave }: RatingModalProps
                 Avaliação Dela
               </label>
               {renderStars(ratingShe, setRatingShe)}
+            </div>
+            
+            <div className="flex flex-col">
+              <label htmlFor="watchedAt" className="block text-sm font-medium text-gray-300 mb-2">
+                Data que assistiram
+              </label>
+              <input
+                type="date"
+                id="watchedAt"
+                value={watchedAt}
+                onChange={(e) => setWatchedAt(e.target.value)}
+                className="w-full bg-cinema-900 border border-cinema-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
+              />
             </div>
 
             <div>

@@ -3,7 +3,9 @@ import { Search, Popcorn, Film, Heart } from 'lucide-react';
 import { Header } from './components/Header';
 import { MovieCard } from './components/MovieCard';
 import { RatingModal } from './components/RatingModal';
+import { LoginModal } from './components/LoginModal';
 import { useMovies } from './hooks/useMovies';
+import { useAuth } from './hooks/useAuth';
 import { searchMovies } from './services/api';
 import type { Movie } from './types';
 
@@ -15,6 +17,9 @@ function App() {
   const [activeTab, setActiveTab] = useState<'watchlist' | 'watched'>('watchlist');
   
   const [ratingModalMovie, setRatingModalMovie] = useState<Movie | null>(null);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
+  const { isAdmin, login, logout } = useAuth();
 
   // Configurações e loading
   const {
@@ -68,7 +73,17 @@ function App() {
 
   return (
     <div className="min-h-screen bg-cinema-900 pb-20">
-      <Header />
+      <Header 
+        isAdmin={isAdmin} 
+        onLoginClick={() => setIsLoginModalOpen(true)} 
+        onLogoutClick={logout} 
+      />
+      
+      <LoginModal 
+        isOpen={isLoginModalOpen} 
+        onClose={() => setIsLoginModalOpen(false)} 
+        onLogin={login} 
+      />
       
       <RatingModal
         movie={ratingModalMovie}
@@ -120,6 +135,7 @@ function App() {
                         key={movie.id}
                         movie={movie}
                         type="search"
+                        isAdmin={isAdmin}
                         onAdd={handleAddMovie}
                       />
                     ))}
@@ -176,6 +192,7 @@ function App() {
                     key={movie.id}
                     movie={movie}
                     type="watchlist"
+                    isAdmin={isAdmin}
                     onRemoveWatchlist={removeFromWatchlist}
                     onMarkWatched={(id) => setRatingModalMovie(watchlist.find(m => m.id === id) || null)}
                   />
@@ -225,6 +242,7 @@ function App() {
                     key={movie.id}
                     movie={movie}
                     type="watched"
+                    isAdmin={isAdmin}
                     onRemoveWatched={removeFromWatched}
                   />
                 ))}
