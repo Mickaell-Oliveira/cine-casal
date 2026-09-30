@@ -4,6 +4,7 @@ import { Header } from './components/Header';
 import { MovieCard } from './components/MovieCard';
 import { RatingModal } from './components/RatingModal';
 import { LoginModal } from './components/LoginModal';
+import { MovieDetailsModal } from './components/MovieDetailsModal';
 import { useMovies } from './hooks/useMovies';
 import { useAuth } from './hooks/useAuth';
 import { searchMovies } from './services/api';
@@ -17,6 +18,7 @@ function App() {
   const [activeTab, setActiveTab] = useState<'watchlist' | 'watched'>('watchlist');
   
   const [ratingModalMovie, setRatingModalMovie] = useState<Movie | null>(null);
+  const [detailsModalMovie, setDetailsModalMovie] = useState<Movie | null>(null);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
   const { isAdmin, login, logout } = useAuth();
@@ -92,6 +94,12 @@ function App() {
         onSave={markAsWatched}
       />
 
+      <MovieDetailsModal
+        movie={detailsModalMovie}
+        isOpen={!!detailsModalMovie}
+        onClose={() => setDetailsModalMovie(null)}
+      />
+
       {loading && (
         <div className="fixed inset-0 bg-cinema-900/80 backdrop-blur-sm z-[100] flex items-center justify-center">
            <div className="animate-spin rounded-full h-12 w-12 border-4 border-accent border-t-transparent"></div>
@@ -136,6 +144,7 @@ function App() {
                         movie={movie}
                         type="search"
                         isAdmin={isAdmin}
+                        onClick={(movie) => setDetailsModalMovie(movie)}
                         onAdd={handleAddMovie}
                       />
                     ))}
@@ -193,6 +202,7 @@ function App() {
                     movie={movie}
                     type="watchlist"
                     isAdmin={isAdmin}
+                    onClick={(movie) => setDetailsModalMovie(movie)}
                     onRemoveWatchlist={removeFromWatchlist}
                     onMarkWatched={(id) => setRatingModalMovie(watchlist.find(m => m.id === id) || null)}
                   />
@@ -243,6 +253,7 @@ function App() {
                     movie={movie}
                     type="watched"
                     isAdmin={isAdmin}
+                    onClick={(movie) => setDetailsModalMovie(movie)}
                     onRemoveWatched={removeFromWatched}
                   />
                 ))}

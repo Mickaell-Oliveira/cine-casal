@@ -7,6 +7,25 @@ export interface Movie {
   release_date: string;
 }
 
+export interface Provider {
+  provider_id: number;
+  provider_name: string;
+  logo_path: string;
+}
+
+export interface WatchProviders {
+  flatrate?: Provider[];
+  rent?: Provider[];
+  buy?: Provider[];
+}
+
+export interface ExtendedMovieDetails extends Movie {
+  vote_average: number;
+  genres: { id: number; name: string }[];
+  runtime: number;
+  watch_providers?: WatchProviders;
+}
+
 export interface WatchlistMovie extends Movie {
   addedAt: string;
 }

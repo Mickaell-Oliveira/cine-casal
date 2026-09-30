@@ -6,6 +6,7 @@ interface MovieCardProps {
   movie: Movie;
   type: 'search' | 'watchlist' | 'watched';
   isAdmin: boolean;
+  onClick?: (movie: Movie) => void;
   onAdd?: (movie: Movie) => void;
   onRemoveWatchlist?: (id: number) => void;
   onRemoveWatched?: (id: number) => void;
@@ -16,6 +17,7 @@ export function MovieCard({
   movie,
   type,
   isAdmin,
+  onClick,
   onAdd,
   onRemoveWatchlist,
   onRemoveWatched,
@@ -28,7 +30,10 @@ export function MovieCard({
   const watchedMovie = movie as WatchedMovie;
 
   return (
-    <div className="group bg-cinema-800 rounded-xl overflow-hidden shadow-lg border border-cinema-700 hover:border-cinema-500 transition-all duration-300 flex flex-col h-full">
+    <div 
+      onClick={() => onClick && onClick(movie)}
+      className={`group bg-cinema-800 rounded-xl overflow-hidden shadow-lg border border-cinema-700 hover:border-cinema-500 transition-all duration-300 flex flex-col h-full ${onClick ? 'cursor-pointer' : ''}`}
+    >
       <div className="relative aspect-[2/3] overflow-hidden">
         <img
           src={getImageUrl(movie.poster_path)}
@@ -43,7 +48,7 @@ export function MovieCard({
           <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all md:translate-x-2 md:group-hover:translate-x-0">
             {isSearch && onAdd && (
             <button
-              onClick={() => onAdd(movie)}
+              onClick={(e) => { e.stopPropagation(); onAdd(movie); }}
               className="p-2 bg-accent hover:bg-red-700 text-white rounded-full shadow-lg backdrop-blur-sm transition-colors"
               title="Adicionar à lista"
             >
@@ -54,14 +59,14 @@ export function MovieCard({
           {isWatchlist && (
             <>
               <button
-                onClick={() => onMarkWatched && onMarkWatched(movie.id)}
+                onClick={(e) => { e.stopPropagation(); onMarkWatched && onMarkWatched(movie.id); }}
                 className="p-2 bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg backdrop-blur-sm transition-colors"
                 title="Marcar como assistido"
               >
                 <Check size={20} />
               </button>
               <button
-                onClick={() => onRemoveWatchlist && onRemoveWatchlist(movie.id)}
+                onClick={(e) => { e.stopPropagation(); onRemoveWatchlist && onRemoveWatchlist(movie.id); }}
                 className="p-2 bg-cinema-900/80 hover:bg-red-900 text-white rounded-full shadow-lg backdrop-blur-sm transition-colors"
                 title="Remover"
               >
@@ -72,7 +77,7 @@ export function MovieCard({
 
           {isWatched && onRemoveWatched && (
             <button
-              onClick={() => onRemoveWatched(movie.id)}
+              onClick={(e) => { e.stopPropagation(); onRemoveWatched(movie.id); }}
               className="p-2 bg-cinema-900/80 hover:bg-red-900 text-white rounded-full shadow-lg backdrop-blur-sm transition-colors"
               title="Remover"
             >
